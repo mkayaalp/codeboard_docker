@@ -27,6 +27,7 @@ docker build --file="docker_build_files/haskell-hspec.docker" --tag="cobo/haskel
 docker build --file="docker_build_files/haskell.docker" --tag="cobo/haskell" --rm=true .
 docker build --file="docker_build_files/java_and_java-junit.docker" --tag="cobo/java8-junit4" --rm=true .
 docker build --file="docker_build_files/py_and_py-unittest.docker" --tag="cobo/python" --rm=true .
+docker build --file="docker_build_files/eiffel.docker" --tag="cobo/eiffel" --rm=true .
 
 echo "##########################################"
 echo "# Cobo Docker - Done building all images #"
