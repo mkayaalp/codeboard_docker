@@ -1,5 +1,5 @@
 # Docker file to create a container for running JUnit 4 tests with Java 8.
-# Will install the Oracle version of Java 8 and Junit 4 package for Ubuntu 14.04.
+# Will install the OpenJDK version of Java 8 and Junit 4 package for Ubuntu 14.04.
 #
 # To build this file execute (including "." at the end): docker build --file="java_and_java-junit.docker" --tag="cobo/java8-junit4" --rm=true .
 #
@@ -20,9 +20,11 @@ FROM cobo/ubuntu
 # that would require to install add-apt-repository first which takes up quite some space
 # instead we add the repos manually to /etc/apt/sources.list
 RUN \
-	echo "# Repositories to install Oracle Java 8" >> /etc/apt/sources.list && \
-	echo "deb http://ppa.launchpad.net/webupd8team/java/ubuntu trusty main" >> /etc/apt/sources.list && \
-	echo "deb-src http://ppa.launchpad.net/webupd8team/java/ubuntu trusty main" >> /etc/apt/sources.list && \
+	echo "# Repositories to install OpenJDK Java 8" >> /etc/apt/sources.list && \
+	echo "deb http://ppa.launchpad.net/openjdk-r/ppa/ubuntu trusty main" >> /etc/apt/sources.list && \
+	echo "deb-src http://ppa.launchpad.net/openjdk-r/ppa/ubuntu trusty main" >> /etc/apt/sources.list && \
+
+	sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys EB9B1D8886F44E2A && \
 
 	# remove the openjdk that may come preinstalled with ubuntu
 	apt-get purge openjdk* && \
@@ -30,14 +32,13 @@ RUN \
 	# update the package manager
 	apt-get update && \
 
-	# the oracle installer asks to confirm the licencse agreement; this commands auto accepts it
-	echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | sudo /usr/bin/debconf-set-selections && \
-
-	# install oracle java 8, the java 8 default settings, and junit 4
+	# install OpenJDK java 8, the java 8 default settings, and junit 4
 	apt-get install -y --force-yes \
-		oracle-java8-installer \
-		oracle-java8-set-default \
-		junit4
+		openjdk-8-jdk \
+		junit4 && \
+
+	# default-jre-headless installs Java 7, so remove it once 8 is installed
+	apt-get remove -y openjdk-7-jre-headless
 
 # set maintainer
 MAINTAINER cobo <support@codeboard.io>
